@@ -74,7 +74,7 @@ const Hero = () => {
               variants={itemVariants}
             >
               Hi, I'm{' '}
-              <span className="hero-name">Your Name</span>
+              <span className="hero-name">Ekansh Soni</span>
             </motion.h1>
             
             <motion.div 
