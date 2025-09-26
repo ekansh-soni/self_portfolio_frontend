@@ -3,15 +3,14 @@
  * Main landing section with animated text and call-to-action
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaArrowDown, FaDownload, FaPlay } from 'react-icons/fa';
-import Typed from 'react-typed';
+import { FaArrowDown, FaDownload, FaPlay, FaCode } from 'react-icons/fa';
+import { ReactTyped } from 'react-typed';
 import './Hero.css';
 
 const Hero = () => {
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   // Typed text options
   const typedStrings = [
@@ -45,7 +44,7 @@ const Hero = () => {
 
   // Handle typing completion
   const handleTypingComplete = () => {
-    setIsTypingComplete(true);
+    // Typing completed
   };
 
   // Scroll to next section
@@ -83,7 +82,7 @@ const Hero = () => {
               variants={itemVariants}
             >
               <span className="hero-label">I'm a </span>
-              <Typed
+              <ReactTyped
                 strings={typedStrings}
                 typeSpeed={50}
                 backSpeed={30}
@@ -226,3 +225,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
