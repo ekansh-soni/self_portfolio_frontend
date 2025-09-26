@@ -1,70 +1,222 @@
-# Getting Started with Create React App
+# Portfolio Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, responsive portfolio website built with React.js, featuring dynamic content management, interactive UI components, and professional design.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **Modern React Architecture**: Built with React 19, React Router DOM, and modern hooks
+- **Responsive Design**: Mobile-first approach with CSS Grid and Flexbox
+- **Interactive UI**: Smooth animations with Framer Motion and AOS
+- **Dynamic Content**: Real-time data from backend API
+- **Authentication**: Secure login and dashboard access
+- **Theme Support**: Light and dark mode with smooth transitions
+- **SEO Optimized**: React Helmet Async for meta tags and SEO
+- **Accessibility**: WCAG compliant with keyboard navigation
+- **Performance**: Optimized with lazy loading and code splitting
 
-### `npm start`
+## 🛠️ Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Core Technologies
+- **React 19.1.1** - Modern React with latest features
+- **React Router DOM 6.20.1** - Client-side routing
+- **Axios 1.6.2** - HTTP client for API requests
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### UI & Animation
+- **Framer Motion 10.16.16** - Advanced animations and gestures
+- **React Icons 4.12.0** - Comprehensive icon library
+- **AOS 2.3.4** - Animate On Scroll library
+- **Swiper 11.0.5** - Touch slider and carousel
 
-### `npm test`
+### Forms & Validation
+- **React Hook Form 7.48.2** - Performant forms with validation
+- **React Hot Toast 2.4.1** - Beautiful toast notifications
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Development Tools
+- **React Scripts 5.0.1** - Create React App tooling
+- **React Helmet Async 1.3.0** - Document head management
+- **React Intersection Observer 9.5.3** - Intersection observer hooks
 
-### `npm run build`
+## 📁 Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+portfolio-frontend/
+├── public/                 # Static assets
+├── src/
+│   ├── components/        # Reusable components
+│   │   ├── common/        # Common components
+│   │   └── layout/        # Layout components
+│   ├── context/           # React Context providers
+│   ├── pages/             # Page components
+│   ├── services/          # API services
+│   ├── App.js             # Main app component
+│   ├── App.css            # Global styles
+│   ├── index.js           # App entry point
+│   └── index.css          # Base styles and utilities
+├── package.json
+└── README.md
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Prerequisites
+- Node.js 16+ and npm
+- Backend API running (see portfolio-backend)
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd portfolio-frontend
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. **Environment Setup**
+   ```bash
+   # Create .env file
+   cp .env.example .env
+   
+   # Edit .env with your configuration
+   REACT_APP_API_URL=http://localhost:5000/api
+   REACT_APP_ENVIRONMENT=development
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. **Start development server**
+   ```bash
+   npm start
+   ```
 
-## Learn More
+5. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Available Scripts
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `npm start` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run tests
+- `npm run eject` - Eject from Create React App
 
-### Code Splitting
+## 🔧 Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Environment Variables
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_ENVIRONMENT=development
+REACT_APP_GOOGLE_ANALYTICS_ID=your-ga-id
+REACT_APP_SENTRY_DSN=your-sentry-dsn
+```
 
-### Analyzing the Bundle Size
+## 📱 Responsive Design
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Breakpoints
+- **Mobile**: < 480px
+- **Tablet**: 480px - 768px
+- **Desktop**: 768px - 1024px
+- **Large Desktop**: > 1024px
 
-### Making a Progressive Web App
+## 🎭 Animations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Framer Motion
+- Page transitions
+- Component animations
+- Gesture support
+- Layout animations
 
-### Advanced Configuration
+### AOS (Animate On Scroll)
+- Scroll-triggered animations
+- Intersection Observer API
+- Performance optimized
+- Accessibility compliant
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🔐 Authentication
 
-### Deployment
+### AuthContext
+- User state management
+- Login/logout functionality
+- Protected routes
+- Token management
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🎨 Theming
 
-### `npm run build` fails to minify
+### ThemeContext
+- Light/dark mode support
+- CSS custom properties
+- Smooth transitions
+- System preference detection
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📊 Performance
+
+### Optimization Strategies
+- Code splitting with React.lazy()
+- Image optimization
+- Bundle analysis
+- Lazy loading components
+- Memoization with React.memo()
+
+## 🧪 Testing
+
+### Testing Stack
+- Jest - Unit testing
+- React Testing Library - Component testing
+- User Event - Interaction testing
+
+## 🚀 Deployment
+
+### Build Process
+```bash
+npm run build
+```
+
+### Deployment Options
+- **Vercel**: Zero-config deployment
+- **Netlify**: Static site hosting
+- **AWS S3**: Cloud storage
+- **GitHub Pages**: Free hosting
+
+## 📈 SEO & Analytics
+
+### SEO Features
+- React Helmet Async for meta tags
+- Semantic HTML structure
+- Open Graph tags
+- Twitter Card support
+- Sitemap generation
+
+## 🔧 Development
+
+### Code Quality
+- ESLint configuration
+- Prettier formatting
+- Husky git hooks
+- Conventional commits
+
+## 🤝 Contributing
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if needed
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+### Getting Help
+- Check the documentation
+- Search existing issues
+- Create a new issue
+- Contact the maintainers
+
+---
+
+**Built with ❤️ using React.js**

@@ -1,0 +1,87 @@
+/**
+ * Scroll to Top Component Styles
+ * Floating action button with smooth animations
+ */
+
+.scroll-to-top {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  z-index: var(--z-fixed);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-fast);
+}
+
+.scroll-to-top:hover {
+  background-color: var(--primary-dark);
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+.scroll-to-top:active {
+  transform: translateY(0);
+}
+
+.scroll-to-top svg {
+  font-size: 1.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .scroll-to-top {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 45px;
+    height: 45px;
+  }
+  
+  .scroll-to-top svg {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-to-top {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+  }
+  
+  .scroll-to-top svg {
+    font-size: 1rem;
+  }
+}
+
+/* Focus styles for accessibility */
+.scroll-to-top:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .scroll-to-top {
+    border: 2px solid var(--white);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-to-top {
+    transition: none;
+  }
+}
