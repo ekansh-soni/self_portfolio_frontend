@@ -15,57 +15,141 @@ import {
   FaChartBar,
   FaUsers,
   FaProjectDiagram,
-  FaCog
+  FaCog,
+  FaSearch,
+  FaFilter
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import ProjectForm from '../components/ProjectForm';
+import { projectsAPI } from '../services/api';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoading, setIsLoading] = useState(true);
+  const [showProjectForm, setShowProjectForm] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Mock data - replace with actual API calls
   const [stats, setStats] = useState({
-    totalProjects: 12,
-    totalViews: 2450,
-    totalLikes: 89,
-    profileViews: 156
+    totalProjects: 0,
+    totalViews: 0,
+    totalLikes: 0,
+    profileViews: 0
   });
 
-  const [recentProjects] = useState([
-    {
-      id: 1,
-      title: 'E-Commerce Platform',
-      status: 'Published',
-      views: 1250,
-      likes: 45,
-      lastUpdated: '2023-12-01'
-    },
-    {
-      id: 2,
-      title: 'Task Management App',
-      status: 'Draft',
-      views: 0,
-      likes: 0,
-      lastUpdated: '2023-11-28'
-    },
-    {
-      id: 3,
-      title: 'Weather Dashboard',
-      status: 'Published',
-      views: 750,
-      likes: 28,
-      lastUpdated: '2023-11-15'
-    }
-  ]);
+  const categories = [
+    'All',
+    'Web Development',
+    'Mobile Development',
+    'Desktop Application',
+    'Data Science',
+    'Machine Learning',
+    'AI/ML',
+    'Game Development',
+    'DevOps',
+    'UI/UX Design',
+    'Other'
+  ];
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    loadProjects();
   }, []);
+
+  useEffect(() => {
+    filterProjects();
+  }, [projects, searchTerm, selectedCategory]);
+
+  const loadProjects = async () => {
+    try {
+      setIsLoading(true);
+      const response = await projectsAPI.getMyProjects();
+      setProjects(response.data.projects || []);
+      
+      // Calculate stats
+      const projects = response.data.projects || [];
+      const totalViews = projects.reduce((sum, project) => sum + (project.views || 0), 0);
+      const totalLikes = projects.reduce((sum, project) => sum + (project.likes || 0), 0);
+      
+      setStats({
+        totalProjects: projects.length,
+        totalViews,
+        totalLikes,
+        profileViews: 0 // This would come from profile API
+      });
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      // Set empty state on error
+      setProjects([]);
+      setStats({
+        totalProjects: 0,
+        totalViews: 0,
+        totalLikes: 0,
+        profileViews: 0
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filterProjects = () => {
+    let filtered = projects;
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(project => project.category === selectedCategory);
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(project =>
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.technologies.some(tech => 
+          tech.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+
+    setFilteredProjects(filtered);
+  };
+
+  const handleAddProject = () => {
+    setEditingProject(null);
+    setShowProjectForm(true);
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProject(project);
+    setShowProjectForm(true);
+  };
+
+  const handleDeleteProject = async (projectId) => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await projectsAPI.deleteProject(projectId);
+        await loadProjects();
+      } catch (error) {
+        console.error('Error deleting project:', error);
+      }
+    }
+  };
+
+  const handleProjectSave = () => {
+    setShowProjectForm(false);
+    setEditingProject(null);
+    loadProjects();
+  };
+
+  const handleCloseForm = () => {
+    setShowProjectForm(false);
+    setEditingProject(null);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -115,7 +199,10 @@ const Dashboard = () => {
                 <p>Welcome back, {user?.firstName}!</p>
               </div>
               <div className="dashboard-actions">
-                <button className="btn btn-primary">
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleAddProject}
+                >
                   <FaPlus />
                   New Project
                 </button>
@@ -192,7 +279,12 @@ const Dashboard = () => {
                 <div className="recent-projects">
                   <div className="section-header">
                     <h2>Recent Projects</h2>
-                    <button className="btn btn-outline">View All</button>
+                    <button 
+                      className="btn btn-outline"
+                      onClick={() => setActiveTab('projects')}
+                    >
+                      View All
+                    </button>
                   </div>
                   
                   <div className="projects-table">
@@ -204,38 +296,64 @@ const Dashboard = () => {
                       <div>Actions</div>
                     </div>
                     
-                    {recentProjects.map((project, index) => (
-                      <motion.div
-                        key={project.id}
-                        className="table-row"
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
-                      >
-                        <div className="project-info">
-                          <h4 className="project-title">{project.title}</h4>
-                          <p className="project-date">Updated {project.lastUpdated}</p>
-                        </div>
-                        <div className="project-status">
-                          <span className={`status-badge ${project.status.toLowerCase()}`}>
-                            {project.status}
-                          </span>
-                        </div>
-                        <div className="project-views">{project.views}</div>
-                        <div className="project-likes">{project.likes}</div>
-                        <div className="project-actions">
-                          <button className="action-btn" title="View">
-                            <FaEye />
-                          </button>
-                          <button className="action-btn" title="Edit">
-                            <FaEdit />
-                          </button>
-                          <button className="action-btn" title="Delete">
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </motion.div>
-                    ))}
+                    {projects.length > 0 ? (
+                      projects.slice(0, 3).map((project, index) => (
+                        <motion.div
+                          key={project.id}
+                          className="table-row"
+                          initial={{ opacity: 0, x: -30 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.6, delay: index * 0.1 }}
+                        >
+                          <div className="project-info">
+                            <h4 className="project-title">{project.title}</h4>
+                            <p className="project-date">Updated {new Date(project.updatedAt || project.createdAt).toLocaleDateString()}</p>
+                          </div>
+                          <div className="project-status">
+                            <span className={`status-badge ${project.status?.toLowerCase().replace(' ', '-')}`}>
+                              {project.status}
+                            </span>
+                          </div>
+                          <div className="project-views">{project.views || 0}</div>
+                          <div className="project-likes">{project.likes || 0}</div>
+                          <div className="project-actions">
+                            <button 
+                              className="action-btn" 
+                              title="View"
+                              onClick={() => window.open(project.liveUrl, '_blank')}
+                              disabled={!project.liveUrl}
+                            >
+                              <FaEye />
+                            </button>
+                            <button 
+                              className="action-btn" 
+                              title="Edit"
+                              onClick={() => handleEditProject(project)}
+                            >
+                              <FaEdit />
+                            </button>
+                            <button 
+                              className="action-btn" 
+                              title="Delete"
+                              onClick={() => handleDeleteProject(project.id)}
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="no-projects-overview">
+                        <p>No projects yet. Create your first project to get started!</p>
+                        <button 
+                          className="btn btn-primary"
+                          onClick={handleAddProject}
+                        >
+                          <FaPlus />
+                          Create First Project
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -245,12 +363,143 @@ const Dashboard = () => {
               <div className="dashboard-projects">
                 <div className="section-header">
                   <h2>Manage Projects</h2>
-                  <button className="btn btn-primary">
+                  <button 
+                    className="btn btn-primary"
+                    onClick={handleAddProject}
+                  >
                     <FaPlus />
                     Add Project
                   </button>
                 </div>
-                <p>Project management interface will be implemented here.</p>
+
+                {/* Filters */}
+                <div className="projects-filters">
+                  <div className="search-container">
+                    <FaSearch className="search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search projects..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input"
+                    />
+                  </div>
+
+                  <div className="category-filter">
+                    <FaFilter className="filter-icon" />
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="category-select"
+                    >
+                      {categories.map(category => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Projects Grid */}
+                <div className="projects-grid">
+                  {filteredProjects.map((project, index) => (
+                    <motion.div
+                      key={project.id}
+                      className="project-card"
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                    >
+                      <div className="project-image">
+                        <img 
+                          src={project.images?.[0]?.url || '/api/placeholder/400/300'} 
+                          alt={project.title}
+                        />
+                        {project.isFeatured && (
+                          <div className="featured-badge">Featured</div>
+                        )}
+                      </div>
+
+                      <div className="project-content">
+                        <div className="project-header">
+                          <h3 className="project-title">{project.title}</h3>
+                          <div className="project-category">{project.category}</div>
+                        </div>
+
+                        <p className="project-description">{project.shortDescription}</p>
+
+                        <div className="project-technologies">
+                          {project.technologies?.slice(0, 3).map(tech => (
+                            <span key={tech} className="tech-tag">
+                              {tech}
+                            </span>
+                          ))}
+                          {project.technologies?.length > 3 && (
+                            <span className="tech-tag">
+                              +{project.technologies.length - 3} more
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="project-footer">
+                          <div className="project-stats">
+                            <span className="project-views">
+                              {project.views || 0} views
+                            </span>
+                            <span className="project-likes">
+                              {project.likes || 0} likes
+                            </span>
+                          </div>
+                          <div className="project-status">
+                            <span className={`status-badge ${project.status?.toLowerCase().replace(' ', '-')}`}>
+                              {project.status}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="project-actions">
+                          <button 
+                            className="action-btn"
+                            onClick={() => handleEditProject(project)}
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button 
+                            className="action-btn"
+                            onClick={() => window.open(project.liveUrl, '_blank')}
+                            title="View Live"
+                            disabled={!project.liveUrl}
+                          >
+                            <FaEye />
+                          </button>
+                          <button 
+                            className="action-btn danger"
+                            onClick={() => handleDeleteProject(project.id)}
+                            title="Delete"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {filteredProjects.length === 0 && !isLoading && (
+                  <div className="no-projects">
+                    <h3>No projects found</h3>
+                    <p>Try adjusting your search or filter criteria, or create your first project.</p>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={handleAddProject}
+                    >
+                      <FaPlus />
+                      Create Your First Project
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -273,6 +522,16 @@ const Dashboard = () => {
             )}
           </div>
         </motion.main>
+
+        {/* Project Form Modal */}
+        {showProjectForm && (
+          <ProjectForm
+            project={editingProject}
+            onClose={handleCloseForm}
+            onSave={handleProjectSave}
+            isEdit={!!editingProject}
+          />
+        )}
       </motion.div>
     </>
   );

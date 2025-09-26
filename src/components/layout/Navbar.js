@@ -107,8 +107,8 @@ const Navbar = () => {
             {theme === 'light' ? <FaMoon /> : <FaSun />}
           </motion.button>
 
-          {/* User Menu */}
-          {isAuthenticated ? (
+          {/* Admin Menu - Only show when authenticated */}
+          {isAuthenticated && (
             <div className="navbar-user-menu">
               <motion.button
                 className="navbar-user-button"
@@ -133,10 +133,6 @@ const Navbar = () => {
                 </button>
               </div>
             </div>
-          ) : (
-            <Link to="/login" className="btn btn-primary">
-              Login
-            </Link>
           )}
 
           {/* Mobile Menu Toggle */}
@@ -172,12 +168,6 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
-              
-              {!isAuthenticated && (
-                <Link to="/login" className="navbar-mobile-link">
-                  Login
-                </Link>
-              )}
             </div>
           </motion.div>
         )}

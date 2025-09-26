@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import AOS from 'aos';
@@ -17,6 +17,7 @@ import 'aos/dist/aos.css';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Import pages
 import Home from './pages/Home';
@@ -73,11 +74,16 @@ function App() {
                   <Route path="/education" element={<Education />} />
                   <Route path="/contact" element={<Contact />} />
                   
-                  {/* Authentication Routes */}
-                  <Route path="/login" element={<Login />} />
+                  {/* Admin Authentication Routes */}
+                  <Route path="/admin/login" element={<Login />} />
+                  <Route path="/login" element={<Navigate to="/admin/login" replace />} />
                   
-                  {/* Protected Routes */}
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  {/* Protected Admin Routes */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
                   
                   {/* 404 Route */}
                   <Route path="*" element={<NotFound />} />

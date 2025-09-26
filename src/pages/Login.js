@@ -38,10 +38,10 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Login - Portfolio Dashboard</title>
+        <title>Admin Login - Portfolio Dashboard</title>
         <meta 
           name="description" 
-          content="Login to your portfolio dashboard to manage your profile, projects, and content." 
+          content="Admin login for portfolio management dashboard." 
         />
       </Helmet>
 
@@ -59,9 +59,9 @@ const Login = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="login-header">
-              <h1 className="login-title">Welcome Back</h1>
+              <h1 className="login-title">Admin Access</h1>
               <p className="login-description">
-                Sign in to your account to access your dashboard
+                Sign in to access the portfolio management dashboard
               </p>
             </div>
 

@@ -18,7 +18,7 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
     technologies: [],
     liveUrl: '',
     githubUrl: '',
-    startDate: '',
+    startDate: new Date().toISOString().split('T')[0],
     endDate: '',
     status: 'Completed',
     isPublic: true,
@@ -155,10 +155,18 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
 
     if (!formData.description.trim()) {
       newErrors.description = 'Description is required';
+    } else if (formData.description.trim().length < 10) {
+      newErrors.description = 'Description must be at least 10 characters';
+    } else if (formData.description.trim().length > 2000) {
+      newErrors.description = 'Description must be less than 2000 characters';
     }
 
     if (!formData.shortDescription.trim()) {
       newErrors.shortDescription = 'Short description is required';
+    } else if (formData.shortDescription.trim().length < 10) {
+      newErrors.shortDescription = 'Short description must be at least 10 characters';
+    } else if (formData.shortDescription.trim().length > 200) {
+      newErrors.shortDescription = 'Short description must be less than 200 characters';
     }
 
     if (!formData.startDate) {
@@ -171,6 +179,10 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
 
     if (formData.technologies.length === 0) {
       newErrors.technologies = 'At least one technology is required';
+    }
+
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
     }
 
     setErrors(newErrors);
@@ -189,9 +201,12 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
     try {
       const projectData = {
         ...formData,
-        startDate: new Date(formData.startDate),
-        endDate: formData.endDate ? new Date(formData.endDate) : null
+        startDate: new Date(formData.startDate).toISOString(),
+        endDate: formData.endDate && formData.endDate.trim() ? new Date(formData.endDate).toISOString() : null,
+        images: formData.images.filter(img => img.url && img.publicId) // Only include images with required fields
       };
+      
+      console.log('Sending project data:', projectData);
 
       if (isEdit) {
         await projectsAPI.updateProject(project.id, projectData);
@@ -203,7 +218,18 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
       onClose();
     } catch (error) {
       console.error('Error saving project:', error);
-      setErrors({ submit: 'Failed to save project. Please try again.' });
+      console.error('Error response:', error.response?.data);
+      
+      // Handle validation errors from backend
+      if (error.response?.data?.errors) {
+        const backendErrors = {};
+        error.response.data.errors.forEach(err => {
+          backendErrors[err.field] = err.message;
+        });
+        setErrors(backendErrors);
+      } else {
+        setErrors({ submit: error.response?.data?.message || 'Failed to save project. Please try again.' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -283,21 +309,24 @@ const ProjectForm = ({ project, onClose, onSave, isEdit = false }) => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="category">Category</label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group">
+                <label htmlFor="category">Category *</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className={errors.category ? 'error' : ''}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                {errors.category && <span className="error-message">{errors.category}</span>}
+              </div>
 
                 <div className="form-group">
                   <label htmlFor="status">Status</label>

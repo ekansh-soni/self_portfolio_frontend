@@ -278,6 +278,52 @@
   }
 }
 
+/* Loading, Error, and Empty States */
+.projects-loading,
+.projects-error,
+.projects-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+}
+
+.projects-loading .spinner {
+  font-size: 2rem;
+  color: var(--primary-500);
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-lg);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.projects-loading p,
+.projects-error p,
+.projects-empty p {
+  font-size: 1.125rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+[data-theme="dark"] .projects-loading p,
+[data-theme="dark"] .projects-error p,
+[data-theme="dark"] .projects-empty p {
+  color: var(--gray-400);
+}
+
+.projects-error p {
+  color: var(--red-500);
+}
+
+[data-theme="dark"] .projects-error p {
+  color: var(--red-400);
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .project-card,
@@ -288,6 +334,10 @@
   }
   
   .project-card {
+    animation: none;
+  }
+  
+  .spinner {
     animation: none;
   }
 }
